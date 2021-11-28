@@ -1,4 +1,6 @@
-contacts = [{'First name': 'Niklas', 'Last name': 'Rex', 'Phone': '0176/312456', 'Street': 'Meierstraße 23', 'Postal code': '21255', 'City': 'Hamburg'}, {'First name': 'Annika', 'Last name': 'Rex', 'Phone': '0176/312356', 'Street': 'Müllerstraße', 'Postal code': '21234', 'City': 'Düsseldorf'}]
+import time
+
+contacts = [{'First name': 'Niklas', 'Last name': 'Rex', 'Phone': '0176/312456', 'Street & Streetnumber': 'Meierstraße 23', 'Postal code': '21255', 'City': 'Hamburg'}, {'First name': 'Annika', 'Last name': 'Rex', 'Phone': '0176/312356', 'Street & Streetnumber': 'Müllerstraße', 'Postal code': '21234', 'City': 'Düsseldorf'}]
 
 def create_contact():
     while True:
@@ -14,13 +16,47 @@ def create_contact():
             break 
 
 def update_search_contact(i):
-    print('Updating a contact')   
-
+    while True:
+        a = 1
+        print('\nWhich entry do you want to update?')
+        for key in contacts[i]:
+            print(f'{a} = {key}: {contacts[i][key]}')
+            a += 1
+        try:
+            choice = int(input('Please enter the number you want to update (e.g. 1 for First name): '))
+            if choice <= len(contacts[i]):
+                chosen_key = list(contacts[i])[choice-1] 
+                print(f'\nCurrent value for {chosen_key}: {contacts[i][chosen_key]}')  
+                new_value = input('Please enter a new value: ')
+                contacts[i][chosen_key] = new_value
+                print(f'{chosen_key} value has been updated.')
+                choice = input('\nDo you want to update another entry? (y/n): ')
+                if choice != 'y':  
+                    break
+            
+            else:
+                print('Please enter one of the given numbers')        
+        
+        except ValueError:
+            print('Please enter a valid number.')
 
 
 def update_contact():
-    print('Updating a contact')
-
+    while True:
+        show_contacts()        
+        try:
+            choice = int(input('\nPlease enter the contact number you want to update (e.g. 1 for contact 1): '))
+            if choice <= len(contacts) and choice > 0:
+                update_search_contact(choice-1)
+                choice = input('Do you want to update another contact? (y/n): ')
+                if choice != 'y':
+                    break
+        
+        except ValueError:
+                print('Please enter a valid number.')
+                choice = input('Do you want to update another contact? (y/n): ')
+                if choice != 'y':
+                    break
 
 
 def delete_search_contact(i):
@@ -89,9 +125,21 @@ def show_contacts():
             print(f"{key}: {contacts[i][key]}")
         i += 1
 
+def export_contacts():
+    timestr = time.strftime("%Y%m%d")
+    contact_export = open(f"contact_book_export_{timestr}.txt", 'w')
+    i = 0
+    while i < len(contacts):
+        contact_export.write(f"Contact {i+1}:")
+        for key in contacts[i]:
+            contact_export.write(f"\n{key}: {contacts[i][key]}")
+        contact_export.write('\n\n')
+        i += 1
+    print('\nContacts exported.')
+
 while True:
 
-    print('\nWelcome to your contact book!\n1 = Create contact\n2 = Update contact\n3 = Delete contact\n4 = Search contact\n5 = Show all contacts\n6 = Close contact book')
+    print('\nWelcome to your contact book!\n1 = Create contact\n2 = Update contact\n3 = Delete contact\n4 = Search contact\n5 = Show all contacts\n6 = Export contacts\n7 = Close contact book')
     action = input('Please choose an option: ')
 
     if action == '1':
@@ -109,9 +157,12 @@ while True:
     elif action == '5':
         show_contacts()
 
-    elif action == '6':
+    elif action == '6':  
+        export_contacts()
+
+    elif action == '7':
         print('Application closed.')
-        break  
+        break 
 
     else:
         print('You didn\'t choose a valid option.\nApplication closed.')
