@@ -1,6 +1,6 @@
 import time
 
-contacts = [{'First name': 'Niklas', 'Last name': 'Rex', 'Phone': '0176/312456', 'Street & Streetnumber': 'Meierstraße 23', 'Postal code': '21255', 'City': 'Hamburg'}, {'First name': 'Annika', 'Last name': 'Rex', 'Phone': '0176/312356', 'Street & Streetnumber': 'Müllerstraße', 'Postal code': '21234', 'City': 'Düsseldorf'}]
+contacts = [{'First name': 'Niklas', 'Last name': 'Rex', 'Phone': '0176/312456', 'Street & Streetnumber': 'Meierstraße 23', 'Postal code': '21255', 'City': 'Hamburg'}, {'First name': 'Annika', 'Last name': 'Rex', 'Phone': '0176/312356', 'Street & Streetnumber': 'Müllerstraße 25', 'Postal code': '21234', 'City': 'Düsseldorf'}]
 
 def create_contact():
     while True:
@@ -9,8 +9,7 @@ def create_contact():
             value = input(f'{key}: ')
             new_contact[key] = value
         contacts.append(new_contact)
-        print(contacts)
-        print('Contact created.')
+        print('\nContact created.')
         choice = input('Do you want to create another contact? (y/n): ')
         if choice != 'y':
             break 
@@ -92,30 +91,47 @@ def delete_contact():
                 break
 
 def search_contact(): 
-    search = input('Please enter your search: ')
-    hit = None
-    i = 0
-    while i < len(contacts):
-        for key in contacts[i]:
-            if search in contacts[i][key]:
-                print('\nContact found:')
-                for key in contacts[i]:                    
-                    print(f'{key}: {contacts[i][key]}')
-                print("\n")
-                hit = input('Is this the contact you are looking for (y/n)?: ')
-        if hit == 'y':
-            change_contact = input('Do you want to update or delete this contact (1 = update, 2 = delete, 3 = no changes)?: ')
-            if change_contact == '1':
-                update_search_contact(i)
+    searching = True
+    while searching:
+        search = input('Please enter your search: ')
+        hit = None
+        contact_found = False
+        i = 0
+        while i < len(contacts):
+            for key in contacts[i]:
+                if search in contacts[i][key]:
+                    contact_found = True
+                    print('\nContact found:')
+                    for key in contacts[i]:                    
+                        print(f'{key}: {contacts[i][key]}')
+                    print("\n")
+                    hit = input('Is this the contact you are looking for (y/n)?: ')
+            if hit == 'y':
+                change_contact = input('Do you want to update or delete this contact (1 = update, 2 = delete, 3 = no changes)?: ')
+                if change_contact == '1':
+                    update_search_contact(i)
+                    choice = input('\nDo you want to do another search? (y/n): ')
+                    if choice == 'y':
+                        break
+                    else:
+                        searching = False
+                elif change_contact == '2':
+                    delete_search_contact(i)
+                    choice = input('\nDo you want to do another search? (y/n): ')
+                    if choice == 'y':
+                        break
+                    else:
+                        searching = False
+                else:
+                    break
+            else: contact_found = False
+            i += 1
+        if contact_found == False:
+            print('\nNo contact found.')
+            choice = input('Do you want to do another search? (y/n): ')
+            if choice != 'y':
                 break
-            elif change_contact == '2':
-                delete_search_contact(i)
-                print('\nClosing application.')
-                break
-            else:
-                print('\nClosing application.')
-                break
-        i += 1
+
 
 def show_contacts():
     i = 0
